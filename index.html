@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>App</title>
+  <base href="/">
+  <style>
+      #chat .pull-left{
+    background-color: darkolivegreen;
+    width: 60%;
+    border: 2px solid red;
+    border-radius: 5px;
+    margin: 10px;
+    height: 38px;
+    padding: 8px 10px;
+}
+#chat .pull-right{
+    background-color: darkturquoise;
+    width: 60%;
+    height: 38px;
+    margin: 10px;
+    border: 2px solid red;
+    border-radius: 5px;
+    padding: 8px 10px;
+}
+  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="icon" type="image/x-icon" href="favicon.ico">
+</head>
+<body>
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+  <script>
+    var socket = io.connect("http://localhost:82");
+    $(document).ready(function(){
+      $(".chat").hide();
+      $("#btnChatNow").click(function(){
+        socket.emit("fAdd",$("#txtUserName").val());
+        $(".add").hide();
+        $(".chat").show();
+        socket.on("fAdd",function(id){
+            $("#id").val(id);
+        });
+      });
+      $("#btnChat").click(function(){
+        socket.emit("fTest",$("#txtMessage").val());
+        $("#txtMessage").val("");
+        $("#txtMessage").focus();
+      });
+      $('#txtMessage').keypress(function(e){
+        if(e.keyCode == 13)
+        {
+          $("#btnChat").click();
+        }
+    });
+          socket.on("fChat",function(msg,id,userName){
+            if(id!==$("#id").val())
+              $("#chat").append("<div class='pull-left'>"+userName+" : "+msg+"</div>");
+            else
+            $("#chat").append("<div class='pull-right'>"+userName+" : "+msg+"</div>");
+          });
+    });
+  </script> 
+  <app-root></app-root>
+<script type="text/javascript" src="runtime.js"></script><script type="text/javascript" src="polyfills.js"></script><script type="text/javascript" src="styles.js"></script><script type="text/javascript" src="scripts.js"></script><script type="text/javascript" src="vendor.js"></script><script type="text/javascript" src="main.js"></script></body>
+</html>
